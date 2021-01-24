@@ -56,14 +56,33 @@ class Vampire {
     return match;
   }
 
-  // Returns the total number of vampires that exist
+  // Returns the total number of vampires that exist, descended from this vampire
   get totalDescendents() {
-
+    let count = 0;
+    // loop through all descendents -- direct and indirect
+    for (const descendent of this.offspring) {
+      // increment count for current descendent (exclude root vampire in count)
+      count++;
+      const totalIndirectDescendents = descendent.totalDescendents;
+      count += totalIndirectDescendents;
+    }
+    return count;
   }
 
-  // Returns an array of all the vampires that were converted after 1980
+  // Returns an array of all the descendent vampires that were converted after 1980
   get allMillennialVampires() {
-
+    let millenials = [];
+    // add this vampire to the array if converted after 1980
+    if (this.yearConverted > 1980) {
+      millenials.push(this);
+    }
+    // loop through descendents to carry out function recursively on each
+    for (const descendent of this.offspring) {
+      const descendentMillenials = descendent.allMillennialVampires;
+      // combine arrays of descendent millenials
+      millenials = millenials.concat(descendentMillenials);
+    }
+    return millenials;
   }
 
   /** Stretch **/
