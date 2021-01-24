@@ -75,5 +75,5 @@ class Vampire {
   }
 }
 
+// Export Vampire class for testing
 module.exports = Vampire;
-
