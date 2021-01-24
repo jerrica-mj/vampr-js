@@ -1,3 +1,5 @@
+// VAMPR! ASSIGNMENT
+
 class Vampire {
   constructor(name, yearConverted) {
     this.name = name;
@@ -10,22 +12,30 @@ class Vampire {
 
   // Adds the vampire as an offspring of this vampire
   addOffspring(vampire) {
-
+    this.offspring.push(vampire);
+    vampire.creator = this;
   }
 
   // Returns the total number of vampires created by that vampire
   get numberOfOffspring() {
-
+    return this.offspring.length;
   }
 
   // Returns the number of vampires away from the original vampire this vampire is
   get numberOfVampiresFromOriginal() {
-
+    let vampireCount = 0;
+    let vampire = this;
+    // original vampire has no (null) creator value
+    while (vampire.creator) {
+      vampire = vampire.creator;
+      vampireCount++;
+    }
+    return vampireCount;
   }
 
   // Returns true if this vampire is more senior than the other vampire. (Who is closer to the original vampire)
   isMoreSeniorThan(vampire) {
-
+    return this.numberOfVampiresFromOriginal < vampire.numberOfVampiresFromOriginal;
   }
 
   /** Stretch **/
@@ -36,7 +46,32 @@ class Vampire {
   // * when comparing Ansel and Sarah, Ansel is the closest common anscestor.
   // * when comparing Ansel and Andrew, Ansel is the closest common anscestor.
   closestCommonAncestor(vampire) {
+    let seniorVampire = this.isMoreSeniorThan(vampire) ? this : vampire;
+    let juniorVampire = this.isMoreSeniorThan(vampire) ? vampire : this;
+    const seniorGeneration = seniorVampire.numberOfVampiresFromOriginal;
+    const juniorGeneration = juniorVampire.numberOfVampiresFromOriginal;
 
+    // if they are the same vampire, return this vampire
+    if (this === vampire) return this;
+    // if one (senior) is the root vampire, return senior
+    if (seniorGeneration === 0) return seniorVampire;
+
+    // compare junior's ancestors to senior, then senior's ancestors (by generations)
+    // restart with original junior for each senior generation back
+    const originalJunior = juniorVampire;
+    for (let s = seniorGeneration; s > 0; s--) {
+      juniorVampire = originalJunior;
+      for (let j = juniorGeneration; j > 0; j--) {
+        // check if senior is junior's creator
+        if (seniorVampire === juniorVampire.creator) return seniorVampire;
+        // check if both junior and senior have the same creator
+        if (seniorVampire.creator === juniorVampire.creator) return seniorVampire.creator;
+        // go back a generation for junior
+        juniorVampire = juniorVampire.creator;
+      }
+      // go back a generation for senior
+      seniorVampire = seniorVampire.creator;
+    }
   }
 }
 
