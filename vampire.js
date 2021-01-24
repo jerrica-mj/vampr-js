@@ -42,17 +42,28 @@ class Vampire {
 
   // Returns the vampire object with that name, or null if no vampire exists with that name
   vampireWithName(name) {
-    
+    // check this vampire's name for a match--use an array to return multiple
+    let match = this.name === name ? this : null;
+
+    // check all this vampire's offspring, depth first, for a match
+    for (const descendent of this.offspring) {
+      const offspringWithName = descendent.vampireWithName(name);
+      // search only until a match is found (match != null/falsey)
+      if (!match) {
+        match = offspringWithName;
+      }
+    }
+    return match;
   }
 
   // Returns the total number of vampires that exist
   get totalDescendents() {
-    
+
   }
 
   // Returns an array of all the vampires that were converted after 1980
   get allMillennialVampires() {
-    
+
   }
 
   /** Stretch **/
